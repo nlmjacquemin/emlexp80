@@ -33,7 +33,7 @@ sbatch \
   --micromamba_env="conda environment name (e.g., coverm)"
 ```
 
-### Adding Arguments for Apptainer
+#### Adding Arguments for Apptainer
 
 You can specify additional arguments for Apptainer commands as follows:
 
@@ -51,7 +51,7 @@ sbatch \
   --micromamba_env="conda environment name (e.g., coverm)"
 ```
 
-### Changing Input Parameters for the Script
+#### Changing Input Parameters for the Script
 
 To modify input parameters for the script, use the following pattern:
 
@@ -63,7 +63,7 @@ sbatch \
   --output_folder="output directory path (e.g., analysis/coverm_bis)"
 ```
 
-### Passing Additional Arguments to the Script Command
+#### Passing Additional Arguments to the Script Command
 
 You can directly pass additional arguments to the command executed within the script, like this:
 
