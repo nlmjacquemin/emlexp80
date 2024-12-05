@@ -12,7 +12,7 @@ These scripts were executed on the EPFL high-performance computing (HPC) cluster
 Ensure the following are installed and available:
 - **SLURM**
 - **Apptainer**
-- Required container images
+- Required container images (**Docker**)
 
 If the dependencies are not available, you can execute each script manually (e.g., `bash run_coverm.sh [arguments]`) with the appropriate container image or install the necessary software on your system.
 
