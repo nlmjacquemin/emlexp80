@@ -1,83 +1,113 @@
-
 # Supplementary Scripts for Reproducible Analysis
 
-Scripts used for the analysis presented in the paper.
+Scripts used for the analysis presented in the paper:
 
-These scripts were executed on the EPFL high-performance computing (HPC) cluster using SLURM (v23.11.10) and Apptainer (v1.2.5). Each node consisted of two Intel(R) Xeon(R) Platinum 8360Y processors running at 2.4 GHz, with 36 cores per processor (72 cores per node), and 3 TB of SSD storage.
+**H. Sallet, M. Calvo, M. Titus, N. Jacquemin, K.L. Meibom, R. Bernier-Latmani.**  
+_High-throughput cultivation and isolation of environmental anaerobes using selectively permeable hydrogel capsules._
 
-## How to Use
+## 📦 Overview
 
-### Requirements
+This repository contains SLURM-compatible scripts and containerized environments used in the bioinformatic metagenomic shotgun analysis.
 
-Ensure the following are installed and available:
-- **SLURM**
-- **Apptainer**
-- Required container images (**Docker**)
+Each step of the analysis—from raw read quality control to genome binning, annotation, and coverage analysis—is defined as an independent, containerized task. It enables reproducible and modular shotgun metagenomic processing using Apptainer and Docker images.
 
-If the dependencies are not available, you can execute each script manually (e.g., `bash run_coverm.sh [arguments]`) with the appropriate container image or install the necessary software on your system.
+### Key Features
 
-### General Usage
+-   Modular design: each tool runs in its own container
+-   Reproducible and portable across clusters supporting Apptainer and SLURM
+-   SLURM-native job submission with dependency chaining
+-   Outputs include bins, annotations, taxonomy, coverage, and phylogeny
 
-Scripts can be launched using the provided launcher and Apptainer scripts. Parameters are specified for each script using the `--` separator, as shown below:
+## 📁 Repository Structure
 
-```bash
-sbatch \
-  --cpus-per-task="CPUs (e.g., 72)" \
-  --time="HH:MM:SS (e.g., 96:00:00)" \
-  launcher.sh \
-  -s apptainer \
-  --working_directory="path to working directory (e.g., /scratch/username/projects/E80)" \
-  -- \
-  -i "image name without extension (e.g., coverm)" \
-  -s "script name without extension (e.g., run_coverm)" \
-  --micromamba_env="conda environment name (e.g., coverm)"
-```
+| Folder         | Purpose                                                       |
+| -------------- | ------------------------------------------------------------- |
+| `dockerfiles/` | Dockerfiles and `build.sh` scripts to build modular images    |
+| `submitters/`  | SLURM `sbatch_*.sh` scripts for submitting jobs per tool      |
+| `wrappers/`    | Tool-specific logic used by the launcher (e.g. fastp, basalt) |
 
-#### Adding Arguments for Apptainer
+## 🚀 Quickstart
 
-You can specify additional arguments for Apptainer commands as follows:
+1. **Clone the Repository**
 
 ```bash
-sbatch \
-  --cpus-per-task="CPUs (e.g., 72)" \
-  --time="HH:MM:SS (e.g., 96:00:00)" \
-  launcher.sh \
-  -s apptainer \
-  --working_directory="path to working directory (e.g., /scratch/username/projects/E80)" \
-  --bind="bind directory (e.g., /scratch/username/gtdb:/db)" \
-  -- \
-  -i "image name without extension (e.g., coverm)" \
-  -s "script name without extension (e.g., run_coverm)" \
-  --micromamba_env="conda environment name (e.g., coverm)"
+git clone https://github.com/nlmjacquemin/emlexp80.git
+cd emlexp80
 ```
 
-#### Changing Input Parameters for the Script
-
-To modify input parameters for the script, use the following pattern:
+2. **Prepare Raw Reads**  
+   Place your input FASTQ files in:
 
 ```bash
-sbatch \
-  ... \
-  --micromamba_env="conda environment name (e.g., coverm)" \
-  -- \
-  --output_folder="output directory path (e.g., analysis/coverm_bis)"
+/.../project_folder/raw/reads/
 ```
 
-#### Passing Additional Arguments to the Script Command
-
-You can directly pass additional arguments to the command executed within the script, like this:
+3. **Build All Images (Docker → Apptainer)**
 
 ```bash
-sbatch \
-  ... \
-  --micromamba_env="conda environment name (e.g., coverm)" \
-  -- \
-  -- \
-  --methods="method(s) for calculating coverage (e.g., mean)"
+bash build_sifs.sh
 ```
 
----
+### For de-novo
 
-### Key Notes:
-1. Use `--` to separate script parameters from the SLURM/launcher parameters.
-2. Use an additional `--` to separate script-level arguments from the command-line arguments executed within the script.
+4. **Submit the Full _de novo_ Pipeline (SLURM)**
+
+```bash
+bash submit_denovo_pipeline.sh /path/to/project_folder
+```
+
+Jobs will be submitted in the correct order using SLURM job dependencies.
+
+### For reference-based profiling
+
+4. **Submit the motus script (SLURM)**
+
+```bash
+bash submit_motus.sh /path/to/project_folder
+```
+
+## 🧬 Pipeline Steps and Tools
+
+| Step                         | Tool/databases | CPUs (default) | Time (default) |
+| ---------------------------- | -------------- | -------------- | -------------- |
+| Taxonomic Databases download | gtdb           | 1              | 20h            |
+| Metabolic Databases download | metabolic      | 1              | 48h            |
+| Alignment Databases download | checkm2        | 1              | 4h             |
+| Read QC & Trimming           | fastp          | 16             | 48h            |
+| Read QC                      | fastqc         | 8              | 24h            |
+| Assembly                     | megahit        | 72             | 72h            |
+| Assembly QC                  | Quast          | 72             | 48h            |
+| Binning                      | basalt         | 72             | 7d             |
+| Bin QC                       | checkm2        | 72             | 96h            |
+| Mapping                      | strobealign    | 72             | 96h            |
+| Phylogeny                    | gtotree        | 72             | 24h            |
+| Taxonomy                     | gtdbtk         | 64             | 72h            |
+| Annotation                   | metabolic      | 72             | 48h            |
+| Read abundance               | coverm         | 72             | 24h            |
+
+## 📂 Output Structure
+
+```
+<project_folder>/
+├── raw/reads/
+├── qc/fastp/
+├── assembly/megahit/
+├── binning/basalt/
+├── mapping/strobealign/
+├── phylogeny/gtotree/
+├── annotation/metabolic/
+├── coverage/coverm/
+├── quality/checkm2/
+```
+
+## ⚙️ Computational Environment
+
+Scripts were executed on the EPFL high-performance computing (HPC) cluster using:
+
+-   SLURM version 23.11.10
+-   Apptainer version 1.2.5
+-   Nodes: Dual Intel(R) Xeon(R) Platinum 8360Y (72 cores total), 3 TB SSD
+
+## 🧪 Development
+
+This pipeline is not maintained and is here for reproduciblity only.
