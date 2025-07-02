@@ -3,6 +3,7 @@ set -e
 
 # Base working directory (adjust per project)
 project_folder=$1
+database_folder=$2
 
 echo "Submitting DB downloads..."
 jid_checkm_db=$(sbatch --parsable sbatch_get_checkm_db.sh $project_folder)

@@ -87,17 +87,84 @@ bash submit_motus.sh /path/to/project_folder
 
 ## 📂 Output Structure
 
-```
-<project_folder>/
-├── raw/reads/
-├── qc/fastp/
-├── assembly/megahit/
-├── binning/basalt/
-├── mapping/strobealign/
-├── phylogeny/gtotree/
-├── annotation/metabolic/
-├── coverage/coverm/
-├── quality/checkm2/
+```text
+project_folder/
+├── raw/
+│   ├── reads/
+│   │   ├── *_R1.fastq.gz, *_R2.fastq.gz           # Raw paired-end reads
+│   └── genomes/
+│       └── *.fna, *.fasta                         # Input genomes for annotation
+├── clean/
+│   └── *_R1.clean.fq, *_R2.clean.fq               # Output of fastp
+├── assembly/
+│   └── megahit/
+│       └── <sample>/
+│           └── final.contigs.fa                   # Output of MEGAHIT
+├── binning/
+│   └── basalt/
+│       ├── Final_bestbinset/
+│       │   └── *.fa, *.fna                        # MAGs (best bins)
+│       └── *_final.contigs.fa, *.fq               # Symlinks to assembly + reads
+├── mapping/
+│   ├── reads2bins/
+│   │   ├── <sample>.sorted.bam                    # Strobealign BAMs
+│   │   ├── <sample>.sorted.bam.bai
+│   │   └── bins_db.fna                            # Concatenated bin reference
+│   └── reads2assemblies/
+│       ├── <assembly>/<sample>_on_<assembly>.sorted.bam
+│       └── *.bam.bai
+├── analysis/
+│   ├── fastqc/
+│   │   ├── raw/
+│   │   │   ├── *_fastqc.html
+│   │   │   └── *_fastqc.zip
+│   │   └── clean/
+│   │       ├── *_fastqc.html
+│   │       └── *_fastqc.zip
+│   ├── checkm/
+│   │   └── checkm_quality.tsv                     # Output from CheckM2
+│   ├── coverm/
+│   │   └── coverm_abd.tsv                         # Genome abundance table
+│   ├── gtdb/
+│   │   └── classify/
+│   │       ├── summary.tsv                        # GTDB-Tk classification
+│   │       ├── metadata.tsv
+│   │       ├── placement.pickle
+│   │       └── *.log
+│   ├── metabolic/
+│   │   ├── genomes/
+│   │   │   └── *.fna                              # Symlinked or reheadered genomes
+│   │   └── METABOLIC_output/
+│   │       ├── Pathway/*.tsv                      # KEGG and pathway profiles
+│   │       ├── *.svg, *.html                      # Overview diagrams
+│   │       └── Heatmap/
+│   │           └── *.tsv
+│   ├── gtotree/
+│   │   └── result/
+│   │       ├── *.faa, *.fna                       # Sequences used
+│   │       ├── *.aln                              # Alignments
+│   │       ├── *.tree                             # Final tree
+│   │       └── *.tsv                              # Mapping files
+│   └── quast/
+│       └── megahit/
+│           ├── report.txt, report.tsv
+│           └── contigs_reports/
+│               └── <sample>.tsv
+├── result/
+│   └── motus/
+│       ├── intermediary/
+│       │   └── <sample>.motus                     # Intermediate mOTUs profiles
+│       └── abd.motus                              # Merged abundance table
+├── db/                                            # Optional local database cache
+│   ├── GTDB/
+│   │   └── *.metadata.tsv, taxonomy files
+│   ├── METABOLIC/
+│   │   └── *.hmm, *.ko.list, *.fasta              # Downloaded DBs
+│   └── CheckM2_database/
+│       └── *.dmnd, *.json
+├── scripts/                                       # Wrapper and runner scripts
+│   └── <job_id>
+│       └── run_*.sh, sbatch_*.sh, launcher.sh, apptainer.sh
 ```
 
 ## ⚙️ Computational Environment
@@ -110,4 +177,4 @@ Scripts were executed on the EPFL high-performance computing (HPC) cluster using
 
 ## 🧪 Development
 
-This pipeline is not maintained and is here for reproduciblity only.
+This pipeline is not maintained and is here for reproducibily only.

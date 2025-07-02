@@ -1,19 +1,22 @@
 #!/bin/bash
 
-mkdir -p /scratch/nljacque/db/gtotree
+project_folder="$1"
+database_folder="$2"
+
+mkdir -p $database_folder/db/gtotree
 
 sbatch \
 --cpus-per-task 72 \
 --time 24:00:00 \
 launcher.sh \
 -s apptainer \
---working_directory "/scratch/nljacque/sallet/E80" \
+--working_directory $project_folder \
 -k \
 -- \
 -i gtotree \
 -s run_gtotree\
 --micromamba_env gtotree \
---overlay /scratch/nljacque/db/gtotree/overlay \
+--overlay $database_folder/db/gtotree/overlay \
 -- \
 --jobs 14 \
 --output_folder analysis/gtotree/result_G0 \

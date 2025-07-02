@@ -2,16 +2,15 @@
 
 #SBATCH -vv
 #SBATCH --nodes 1
-#SBATCH --mail-user nicolas.jacquemin@epfl.ch
 #SBATCH --ntasks 1
-#SBATCH --chdir /home/nljacque/jobs/tmp
+#SBATCH --chdir /home
 #SBATCH --output slurm-launcher-%j.out
 
 SCRIPT_VERSION=2.1.0
 
-DEFAULT_SCRIPT_FOLDER=~/scripts
+DEFAULT_SCRIPT_FOLDER=.
 DEFAULT_SCRIPT_EXTENSION=".sh"
-DEFAULT_LOG_FOLDER=~/jobs
+DEFAULT_LOG_FOLDER=./jobs
 DEFAULT_WORKING_LOG_FOLDER=scripts
 
 show_usage() {
@@ -137,7 +136,8 @@ log_message "The job is finished!"
 
 # Moving log files
 log_message "Moving log files..."
-mv /home/nljacque/jobs/tmp/slurm*${SLURM_JOB_ID}* "$job_log_folder"
+mkdir -p $log_folder/tmp
+mv $log_folder/tmp/slurm*${SLURM_JOB_ID}* "$job_log_folder"
 if [[ -n "$working_log_folder" ]]; then
     mkdir -p "$working_directory/$working_log_folder"
     cp -r "$job_log_folder" "$working_directory/$working_log_folder"

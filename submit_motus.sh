@@ -10,11 +10,11 @@ SCRIPT=apptainer
 
 #MANDATORY FOR APPTAINER
 
-PATH_TO_HOST_WORKING_DIRECTORY=/scratch/nljacque/sallet/E92
+PATH_TO_HOST_WORKING_DIRECTORY=$project_folder
 
-IMAGE=motus
+IMAGE=images/motus
 
-SCRIPT_APPTAINER=launch_motus
+SCRIPT_APPTAINER=submitters/bash_motus
 
 #SBATCH THE JOB
 

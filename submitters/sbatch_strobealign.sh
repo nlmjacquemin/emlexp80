@@ -1,11 +1,13 @@
 #!/bin/bash
 
+project_folder=$1
+
 sbatch \
 --cpus-per-task 72 \
 --time 96:00:00 \
 launcher.sh \
 -s apptainer \
---working_directory "/scratch/nljacque/sallet/E85" \
+--working_directory $project_folder \
 -- \
 -i samtools-strobealign \
 -s run_strobealign \

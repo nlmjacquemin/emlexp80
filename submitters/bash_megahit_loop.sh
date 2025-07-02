@@ -1,6 +1,8 @@
 #!/bin/bash
 
-path_to_host_working_directory=$1
+project_folder="$1"
+
+path_to_host_working_directory=$project_folder
 
 input_folder=$path_to_host_working_directory/clean
 
