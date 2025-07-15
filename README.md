@@ -26,6 +26,15 @@ Each step of the analysis—from raw read quality control to genome binning, ann
 | `submitters/`  | SLURM `sbatch_*.sh` scripts for submitting jobs per tool      |
 | `wrappers/`    | Tool-specific logic used by the launcher (e.g. fastp, basalt) |
 
+## ⚙️ Computational Environment
+
+Scripts were executed on the EPFL high-performance computing (HPC) cluster using:
+
+-   [SLURM](https://slurm.schedmd.com/quickstart_admin.html) version 23.11.10
+-   [Apptainer](https://apptainer.org/docs/admin/main/installation.html) version 1.2.5
+-   [Docker](https://docs.docker.com/desktop)
+-   Nodes: Dual Intel(R) Xeon(R) Platinum 8360Y (72 cores total), 3 TB SSD
+
 ## 🚀 Quickstart
 
 1. **Clone the Repository**
@@ -53,7 +62,7 @@ bash build_sifs.sh
 4. **Submit the Full _de novo_ Pipeline (SLURM)**
 
 ```bash
-bash submit_denovo_pipeline.sh /path/to/project_folder
+bash submit_denovo_pipeline.sh /path/to/project_folder /path/to/database_folder
 ```
 
 Jobs will be submitted in the correct order using SLURM job dependencies.
@@ -166,14 +175,6 @@ project_folder/
 │   └── <job_id>
 │       └── run_*.sh, sbatch_*.sh, launcher.sh, apptainer.sh
 ```
-
-## ⚙️ Computational Environment
-
-Scripts were executed on the EPFL high-performance computing (HPC) cluster using:
-
--   SLURM version 23.11.10
--   Apptainer version 1.2.5
--   Nodes: Dual Intel(R) Xeon(R) Platinum 8360Y (72 cores total), 3 TB SSD
 
 ## 🧪 Development
 
