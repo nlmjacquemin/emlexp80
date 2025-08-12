@@ -7,9 +7,9 @@ _High-throughput cultivation and isolation of environmental anaerobes using sele
 
 ## 📦 Overview
 
-This repository contains SLURM-compatible scripts and containerized environments used in the bioinformatic metagenomic shotgun analysis.
+This repository contains SLURM-compatible scripts and containerised environments used in the bioinformatic metagenomic shotgun analysis.
 
-Each step of the analysis—from raw read quality control to genome binning, annotation, and coverage analysis—is defined as an independent, containerized task. It enables reproducible and modular shotgun metagenomic processing using Apptainer and Docker images.
+Each step of the analysis—from raw read quality control to genome binning, annotation, and coverage analysis—is defined as an independent, containerised task. It enables reproducible and modular shotgun metagenomic processing using Apptainer and Docker images.
 
 ### Key Features
 
@@ -178,4 +178,4 @@ project_folder/
 
 ## 🧪 Development
 
-This pipeline is not maintained and is here for reproducibily only.
+This pipeline is not maintained and is here for reproducibility only.
